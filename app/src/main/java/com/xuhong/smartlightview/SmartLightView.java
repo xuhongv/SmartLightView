@@ -1,16 +1,12 @@
 package com.xuhong.smartlightview;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class SmartLightView extends View {
@@ -27,6 +23,11 @@ public class SmartLightView extends View {
     //灯泡上部小圈起始角度:也就是圆弧角为 360 - 120 = 240°
     private float mAngleStar = 120f;
 
+    //总开关
+    private boolean isLightOn = true;
+
+    //接口
+    private SmartLightViewOnClickListener mSmartLightViewOnClickListener;
 
     public SmartLightView(Context context) {
         super(context);
@@ -53,7 +54,6 @@ public class SmartLightView extends View {
         mPaintLight.setStrokeCap(Paint.Cap.SQUARE);
         mPaintLight.setStyle(Paint.Style.STROKE);
 
-
         mPaintCircle = new Paint();
         mPaintCircle.setColor(getResources().getColor(R.color.colorCircle));
         mPaintCircle.setAntiAlias(true);
@@ -66,14 +66,6 @@ public class SmartLightView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-
-
-
-
-
-
-
-
         //确定灯泡的半径
         mCircleRadial = (Math.min(getWidth(), getHeight())) / 2 / 6;
 
@@ -83,33 +75,33 @@ public class SmartLightView extends View {
         int mHalfHeight = getHeight() / 2;
 
 
-        mPaintCircle.setARGB(60,233,231,239);
-        canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 100, mPaintCircle);
-
-        mPaintCircle.setARGB(40,233,231,239);
-        canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 200, mPaintCircle);
-
-        mPaintCircle.setARGB(20,233,231,239);
-        canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 300, mPaintCircle);
-
-        mPaintCircle.setARGB(10,233,231,239);
-        canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 400, mPaintCircle);
-
-
-        //画涟漪圈
-        for (int i = 0; i < 5; i++) {
-            //  canvas.drawCircle(mHalfWidth, mHalfHeight + 20, mCircleRadial + (i + 20) * 2,mPaintCircle);
-        }
-
-
-
-
-
-
         //下方缺角
         float mOffsetAngle = mAngleStar - 90;
         //下发缺角的偏移长度
         int mOffsetDistance = (int) (Math.PI * mOffsetAngle / 180 * mCircleRadial);
+
+
+        if (isLightOn) {
+            mPaintCircle.setARGB(60, 233, 231, 239);
+            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 100, mPaintCircle);
+
+            mPaintCircle.setARGB(40, 233, 231, 239);
+            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 200, mPaintCircle);
+
+            mPaintCircle.setARGB(20, 233, 231, 239);
+            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 300, mPaintCircle);
+
+            mPaintCircle.setARGB(10, 233, 231, 239);
+            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 400, mPaintCircle);
+
+            mPaintLight.setARGB(255, 233, 231, 239);
+
+        } else {
+
+            mPaintLight.setARGB(80, 233, 231, 239);
+
+        }
+
 
         Path mPathCircle = new Path();
         //画圆
@@ -137,15 +129,41 @@ public class SmartLightView extends View {
         canvas.drawPath(mPathLine, mPaintLight);
 
 
-
-        Log.e("xuhong", "控件半径：" + (int) (4 * mCircleRadial / 3));
-        Log.e("xuhong", "控件半径2：" + mCircleRadial);
-        Log.e("xuhong", "-------------------------------------------------");
-        Log.e("xuhong", "控件的高度：" + getHeight());
-        Log.e("xuhong", "控件的宽度：" + getWidth());
-
-
     }
 
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (getLightStatus())
+                setLightOn(false);
+            else setLightOn(true);
+
+            if (mSmartLightViewOnClickListener != null)
+                mSmartLightViewOnClickListener.lightStatusCallBack(getLightStatus());
+
+        }
+        invalidate();
+        return true;
+    }
+
+
+    public boolean getLightStatus() {
+        return isLightOn;
+    }
+
+    public void setLightOn(boolean lightOn) {
+        isLightOn = lightOn;
+    }
+
+    public interface SmartLightViewOnClickListener {
+        //点击事件回调
+        void lightStatusCallBack(boolean isOpen);
+    }
+
+    public void setSmartLightViewOnClickListener(SmartLightViewOnClickListener mSmartLightViewOnClickListener) {
+        this.mSmartLightViewOnClickListener = mSmartLightViewOnClickListener;
+    }
 
 }

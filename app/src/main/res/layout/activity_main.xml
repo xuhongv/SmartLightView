@@ -5,6 +5,7 @@
     android:background="@color/colorBlack">
 
     <com.xuhong.smartlightview.SmartLightView
+        android:id="@+id/SmartLightView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
    />

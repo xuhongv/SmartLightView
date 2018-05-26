@@ -1,4 +1,8 @@
 # SmartLightView
 高仿米家的筒灯控制UI
+
 -----------------
-![](https://i.imgur.com/WjUklGt.png)
+
+ - 效果如下：
+ 
+![](https://i.imgur.com/hyiVTV6.gif)
