@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -28,6 +29,23 @@ public class SmartLightView extends View {
 
     //接口
     private SmartLightViewOnClickListener mSmartLightViewOnClickListener;
+
+    //亮度进度数值
+    private int progressLumin = 0;
+
+    //色温进度数值
+    private int progressTemper = 0;
+
+    //透明度
+    private int progressShow = 0;
+
+    //全局变量是否调透明度
+    private boolean isAdjust = true;
+
+    //灯泡透明度
+    private int mLightAph = 255;
+    //涟漪透明度
+    private int mCircleAph = 255;
 
     public SmartLightView(Context context) {
         super(context);
@@ -82,24 +100,19 @@ public class SmartLightView extends View {
 
 
         if (isLightOn) {
-            mPaintCircle.setARGB(60, 233, 231, 239);
-            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 100, mPaintCircle);
 
-            mPaintCircle.setARGB(40, 233, 231, 239);
-            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 200, mPaintCircle);
-
-            mPaintCircle.setARGB(20, 233, 231, 239);
-            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 300, mPaintCircle);
-
-            mPaintCircle.setARGB(10, 233, 231, 239);
-            canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 400, mPaintCircle);
-
-            mPaintLight.setARGB(255, 233, 231, 239);
+            int partValue = (progressShow / 6);
+            for (int i = 0; i < 5; i++) {
+                mPaintCircle.setAlpha(partValue * i * 2);
+                canvas.drawCircle(mHalfWidth, mHalfHeight + 10, mCircleRadial + 100 * i, mPaintCircle);
+                mPaintLight.setAlpha((int) (2.5 * progressShow));
+            }
+            if (progressShow < 30) {
+                mPaintLight.setAlpha(80);
+            }
 
         } else {
-
-            mPaintLight.setARGB(80, 233, 231, 239);
-
+            mPaintLight.setAlpha(80);
         }
 
 
@@ -165,5 +178,31 @@ public class SmartLightView extends View {
     public void setSmartLightViewOnClickListener(SmartLightViewOnClickListener mSmartLightViewOnClickListener) {
         this.mSmartLightViewOnClickListener = mSmartLightViewOnClickListener;
     }
+
+
+    public int getProgressLumin() {
+        return progressLumin;
+    }
+
+    public synchronized void setProgressLumin(int progressLumin) {
+        this.progressLumin = progressLumin;
+        this.progressShow = progressLumin;
+        postInvalidate();
+    }
+
+    public int getProgressTemper() {
+        return progressTemper;
+    }
+
+    public synchronized void setProgressTemper(int tempProgressTemper) {
+
+        int progressTemper = (int) (tempProgressTemper * 2.5);
+
+        this.progressTemper = progressTemper;
+        mPaintLight.setARGB(255, 255, progressTemper / 4 + 183, progressTemper);
+        mPaintCircle.setARGB(150, 255, progressTemper / 4 + 183, progressTemper);
+        postInvalidate();
+    }
+
 
 }
