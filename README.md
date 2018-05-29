@@ -1,12 +1,7 @@
 # SmartLightView
-高仿米家的筒灯控制UI
+高仿米家的筒灯控制UI: https://blog.csdn.net/xh870189248/article/details/80486158
 
 -----------------
-
- - 效果如下：
- 
-![](https://i.imgur.com/5brg7Xd.gif)
-
 
 ###  一. 前言；
 
@@ -17,8 +12,7 @@
 ###  二. 效果图；
 
 
-![这里写图片描述](https://img-blog.csdn.net/20180528175244508?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hoODcwMTg5MjQ4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
-
+![](https://i.imgur.com/5brg7Xd.gif)
 
 ---------------------
 
@@ -119,5 +113,3 @@
 
 ------
 
-下载：https://download.csdn.net/download/xh870189248/10445098
- gitHub：https://github.com/xuhongv/SmartLightView
